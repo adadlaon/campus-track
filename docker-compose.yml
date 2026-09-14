@@ -1,0 +1,10 @@
+services:
+  sql:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: campus_track_sql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "Passw0rd@1"
+    platform: "linux/amd64"
+    ports:
+      - "56520:1433"
