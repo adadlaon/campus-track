@@ -1,0 +1,58 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio files
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# .NET generated files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+*.db
+*.db-shm
+*.db-wal
+
+# NuGet
+packages/
+*.nupkg
+*.snupkg
+*.nuspec
+*.psmdcp
+
+# ASP.NET / web
+appsettings.Development.json
+!appsettings.Development.example.json
+
+# OS generated files
+Thumbs.db
+.DS_Store
+
+# Rider / JetBrains
+.idea/
+*.iml
+
+# Test results
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# Local environment files
+.env
+.env.*
+
+# Misc
+*.log
+API/appsettings.Local.json
