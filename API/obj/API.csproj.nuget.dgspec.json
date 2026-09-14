@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\adadl\\Projects\\campus-track\\api\\API.csproj": {}
+    "C:\\Users\\adadl\\Projects\\campus-track\\API\\API.csproj": {}
   },
   "projects": {
-    "C:\\Users\\adadl\\Projects\\campus-track\\api\\API.csproj": {
+    "C:\\Users\\adadl\\Projects\\campus-track\\API\\API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\adadl\\Projects\\campus-track\\api\\API.csproj",
+        "projectUniqueName": "C:\\Users\\adadl\\Projects\\campus-track\\API\\API.csproj",
         "projectName": "API",
-        "projectPath": "C:\\Users\\adadl\\Projects\\campus-track\\api\\API.csproj",
+        "projectPath": "C:\\Users\\adadl\\Projects\\campus-track\\API\\API.csproj",
         "packagesPath": "C:\\Users\\adadl\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\adadl\\Projects\\campus-track\\api\\obj\\",
+        "outputPath": "C:\\Users\\adadl\\Projects\\campus-track\\API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Fkbg724re90=",
+  "dgSpecHash": "dhyh9sushYM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\adadl\\Projects\\campus-track\\api\\API.csproj",
+  "projectFilePath": "C:\\Users\\adadl\\Projects\\campus-track\\API\\API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\adadl\\.nuget\\packages\\azure.core\\1.50.0\\azure.core.1.50.0.nupkg.sha512",
     "C:\\Users\\adadl\\.nuget\\packages\\azure.identity\\1.17.1\\azure.identity.1.17.1.nupkg.sha512",
