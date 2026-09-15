@@ -59,7 +59,7 @@ public class UserController(UserManager<AppUser> userManager, ITokenService toke
         return await user.ToDto(tokenService);
     }
     
-    [HttpPost("register")] // api/account/register
+    [HttpPost("register")] // api/user/register
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
         var user = new AppUser
