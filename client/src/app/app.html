@@ -1,1 +1,11 @@
-<h3>{{title()}}</h3>
+<app-nav></app-nav>
+
+<div 
+    [class.mt-24]="router.url !== '/'"
+    [class.container]="router.url !== '/'"
+    [class.mx-auto]="router.url !== '/'"
+>
+    <router-outlet />
+</div>
+
+<app-confirm-dialog />
