@@ -70,6 +70,7 @@ public class UserController(UserManager<AppUser> userManager, ITokenService toke
             Member = new Member
             {
                 DisplayName = registerDto.DisplayName
+                
             }
         };
 

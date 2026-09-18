@@ -1,1 +1,23 @@
-<p>home works!</p>
+<div class="hero bg-base-200 min-h-screen">
+    @if (!registerMode()) {
+    <div class="hero-content text-center">
+        <div class="flex flex-col items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-60 text-primary">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+            <h1 class="text-5xl font-bold">Create a profile</h1>
+            <p class="py-6">Please register to use the application</p>
+            <div class="flex items-center gap-3">
+                @if (!userService.currentUser()) {
+                    <button (click)="showRegister(true)" class="btn btn-primary btn-lg">Register</button>
+                }
+                <button class="btn btn-info btn-lg">Learn more</button>
+            </div>
+        </div>
+    </div>
+    } @else {
+        <div class="w-full text-2xl text-center flex justify-center">
+            <app-register (cancelRegister)="showRegister($event)"></app-register>
+        </div>
+    }
+</div>

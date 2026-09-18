@@ -1,1 +1,71 @@
-<p>register works!</p>
+<div class="card bg-base-100 w-200 mx-auto flex flex-col p-6 rounded-lg shadow-lg">
+    <div class="card-title justify-center text-3xl text-primary">Sign up</div>
+    <div class="card-body w-full">
+        <ul class="steps">
+            <li class="step step-primary">Credentials</li>
+            <li class="step" [class.step-primary]="currentStep() === 2">Profile</li>
+        </ul>
+        @if (currentStep() === 1) {
+            <form [formGroup]="credentialsForm" class="flex flex-col gap-5 w-full steps">
+                <app-text-input class="mt-5" label="Email" formControlName="email"></app-text-input>
+                <app-text-input label="Display name" formControlName="displayName"></app-text-input>
+                <app-text-input label="Password" formControlName="password" type="password"></app-text-input>
+                <app-text-input label="Confirm Password" formControlName="confirmPassword" type="password"></app-text-input>
+                <div class="flex items-center justify-end gap-3">
+                    <button (click)="cancel()" type="button" class="btn">Cancel</button>
+                    <button [disabled]="!credentialsForm.valid" (click)="nextStep()" class="btn btn-primary"
+                        type="button">Next</button>
+                </div>
+            </form>
+        }
+
+        @if (currentStep() === 2) {
+            <form [formGroup]="profileForm" class="flex flex-col w-full gap-5 steps">
+                <div class="w-full rounded-box border border-base-300 bg-base-100 p-4">
+                    <div class="divider mt-0 mb-3 font-semibold">Roles</div>
+                    <ul class="list w-full bg-base-100">
+                        @for (role of roles(); track role.id) {
+                            <li class="list-row" [attr.title]="role.description">
+                                <label class="flex w-full cursor-pointer items-center gap-3">
+                                    <input
+                                        type="radio"
+                                        formControlName="roleId"
+                                        [value]="role.id"
+                                        class="radio radio-primary">
+                                    <span class="font-semibold">{{role.name}}</span>
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <app-text-input 
+                    [maxDate]="getMaxDate()"
+                    type="date" label="Date of Birth" formControlName="dateOfBirth"></app-text-input>
+                <app-text-input label="City" formControlName="city"></app-text-input>
+                <app-text-input label="Country" formControlName="country"></app-text-input>
+                
+                <div class="flex items-center justify-end gap-3">
+                    <button (click)="prevStep()" type="button" class="btn">Back</button>
+                    <button
+                        [disabled]="!profileForm.valid" 
+                        (click)="register()" 
+                        class="btn btn-primary"
+                        type="button">Register
+                    </button>
+                </div>
+            </form>
+        }
+        
+    </div>
+
+    @if (validationErrors().length > 0) {
+        <div class="mt-5 flex bg-gray-200 rounded-2xl w-1/2 p-3 mx-auto">
+            <ul class="flex flex-col text-error space-y-1">
+                @for (error of validationErrors(); track $index) {
+                    <li>{{error}}</li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
