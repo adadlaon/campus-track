@@ -69,23 +69,41 @@ public class UserController(UserManager<AppUser> userManager, ITokenService toke
             UserName = registerDto.Email,
             Member = new Member
             {
-                DisplayName = registerDto.DisplayName
-                
+                DisplayName = registerDto.DisplayName,
+                HouseNumber = registerDto.HouseNumber,
+                Zone = registerDto.Zone,
+                Barangay =  registerDto.Barangay,
+                City = registerDto.City,
+                Province = registerDto.Province,
+                PhoneNumber = registerDto.PhoneNumber
             }
         };
 
         var result = await userManager.CreateAsync(user, registerDto.Password);
-     
+        
         if (!result.Succeeded)
         {
+            var duplicateEmailReported = false;
+
             foreach (var error in result.Errors)
             {
-                ModelState.AddModelError("identity", error.Description);
+                if (error.Code is "DuplicateUserName" or "DuplicateEmail")
+                {
+                    if (!duplicateEmailReported)
+                    {
+                        ModelState.AddModelError("identity", "An account with this email already exists.");
+                        duplicateEmailReported = true;
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("identity", error.Description);
+                }
             }    
 
             return ValidationProblem();
         }
-
+        
         await userManager.AddToRoleAsync(user, "Member");
 
         await SetRefreshTokenCookie(user);

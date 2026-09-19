@@ -13,7 +13,7 @@ import { RegisterCreds } from '../../../types/user';
   templateUrl: './register.html',
 })
 export class Register {
-  private accountService = inject(UserService);
+  private userService = inject(UserService);
   private roleService = inject(RoleService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
@@ -26,9 +26,11 @@ export class Register {
   private readonly roleOrder = ['Parent', 'Guardian', 'Teacher', 'Security', 'Administration'];
   protected roles = computed(() => {
     const roles = this.roleService.roles();
-    return [...roles].sort((left, right) =>
-      this.roleOrder.indexOf(left.name) - this.roleOrder.indexOf(right.name)
-    );
+    return roles
+      .filter(role => role.name === 'Parent' || role.name === 'Guardian')
+      .sort((left, right) =>
+        this.roleOrder.indexOf(left.name) - this.roleOrder.indexOf(right.name)
+      );
   });
 
   constructor() {
@@ -42,9 +44,17 @@ export class Register {
 
     this.profileForm = this.fb.group({
       roleId: ['', Validators.required],
-      dateOfBirth: ['', Validators.required],
-      city: ['', Validators.required],
-      country: ['', Validators.required]
+      houseNumber: [''],
+      zone: ['', Validators.pattern(/^[0-9]+$/)],
+      barangay: ['', Validators.required],
+      city: ['Legazpi City', Validators.required],
+      province: ['Albay', Validators.required],
+      phoneNumber: ['', [
+        Validators.required,
+        Validators.pattern(/^[0-9]+$/),
+        Validators.minLength(11),
+        Validators.maxLength(11)
+      ]]
     })
 
     this.roleService.getRoles().subscribe({
@@ -92,7 +102,7 @@ export class Register {
     if (this.profileForm.valid && this.credentialsForm.valid) {
       const formData = { ...this.credentialsForm.value, ...this.profileForm.value };
 
-      this.accountService.register(formData).subscribe({
+      this.userService.register(formData).subscribe({
         next: () => {
           this.router.navigateByUrl('/members');
         },

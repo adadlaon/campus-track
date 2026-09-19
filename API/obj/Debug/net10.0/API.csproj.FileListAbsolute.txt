@@ -1,7 +1,6 @@
 C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\appsettings.Development.json
 C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\appsettings.json
 C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\API.staticwebassets.endpoints.json
-C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\API.exe
 C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\API.deps.json
 C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\API.runtimeconfig.json
 C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\API.dll
@@ -166,3 +165,4 @@ C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\runtimes\win-x64\nati
 C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\runtimes\win-x86\native\msalruntime_x86.dll
 C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\Data\UserSeedData.json
 C:\Users\adadl\Projects\campus-track\api\obj\Debug\net10.0\API.sourcelink.json
+C:\Users\adadl\Projects\campus-track\api\bin\Debug\net10.0\API.exe

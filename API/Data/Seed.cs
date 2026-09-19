@@ -34,6 +34,12 @@ public class Seed
                     Id = member.Id,
                     DisplayName = member.DisplayName,
                     ImageUrl = member.ImageUrl,
+                    HouseNumber = member.HouseNumber,
+                    Zone = member.Zone,
+                    Barangay = member.Barangay,
+                    City = member.City,
+                    Province = member.Province,
+                    PhoneNumber = member.PhoneNumber,
                     LastActive = member.LastActive,
                     Created = member.Created
                 }
