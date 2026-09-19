@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.Data;
 using API.Entities;
 using API.Extensions;
 using API.Interfaces;
@@ -9,7 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-public class UserController(UserManager<AppUser> userManager, ITokenService tokenService) : BaseApiController
+public class UserController(
+    UserManager<AppUser> userManager,
+    ITokenService tokenService,
+    AppDbContext context) : BaseApiController
 {
     [HttpPost("login")] // api/user/login
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
@@ -62,6 +66,15 @@ public class UserController(UserManager<AppUser> userManager, ITokenService toke
     [HttpPost("register")] // api/user/register
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
+        var roleExists = await context.ApplicationRoles
+            .AnyAsync(role => role.Id == registerDto.RoleId);
+
+        if (!roleExists)
+        {
+            ModelState.AddModelError(nameof(registerDto.RoleId), "The selected role is invalid.");
+            return ValidationProblem();
+        }
+
         var user = new AppUser
         {
             Email = registerDto.Email,
@@ -105,6 +118,13 @@ public class UserController(UserManager<AppUser> userManager, ITokenService toke
         }
         
         await userManager.AddToRoleAsync(user, "Member");
+
+        context.MemberRoles.Add(new MemberRole
+        {
+            MemberId = user.Id,
+            RoleId = registerDto.RoleId
+        });
+        await context.SaveChangesAsync();
 
         await SetRefreshTokenCookie(user);
 

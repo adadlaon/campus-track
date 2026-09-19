@@ -6,7 +6,6 @@ import { ApiError } from '../../../types/error';
   selector: 'app-server-error',
   imports: [],
   templateUrl: './server-error.html',
-  styleUrl: './server-error.css',
 })
 export class ServerError {
   protected error: ApiError
