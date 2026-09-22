@@ -7,6 +7,34 @@ export type User = {
     roles: string[];
 }
 
+export type ManagedUser = {
+    id: string;
+    email: string;
+    displayName: string;
+    imageUrl?: string;
+    roles: string[];
+    houseNumber?: string;
+    zone?: string;
+    barangay?: string;
+    city?: string;
+    province?: string;
+    phoneNumber?: string;
+}
+
+export type ManagedUserRequest = {
+    email: string;
+    password?: string;
+    displayName: string;
+    imageUrl?: string;
+    roles: string[];
+    houseNumber?: string;
+    zone?: string;
+    barangay: string;
+    city: string;
+    province: string;
+    phoneNumber: string;
+}
+
 export type LoginCreds = {
     email: string;
     password: string;

@@ -45,6 +45,11 @@ public class UserManagementController(
     [HttpPost]
     public async Task<ActionResult<UserManagementResponseDto>> CreateUser(CreateUserRequestDto request)
     {
+        if (await userManager.FindByEmailAsync(request.Email) != null)
+        {
+            return Conflict(new { message = "A user with this email already exists." });
+        }
+
         var roles = request.Roles
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();

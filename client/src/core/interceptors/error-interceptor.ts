@@ -28,6 +28,9 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
           case 401:
             toast.error('Unauthorized');
             break;
+          case 409:
+            toast.error(error.error?.message || 'A record with these details already exists.');
+            break;
           case 404:
             router.navigateByUrl('/not-found');
             break;

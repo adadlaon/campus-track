@@ -1,0 +1,129 @@
+<section class="w-full space-y-6 p-4 md:p-6">
+	<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+		<div>
+			<h1 class="text-2xl font-semibold text-primary">User management</h1>
+			<p class="text-sm text-base-content/70">Create, update, and manage application users.</p>
+		</div>
+		<button type="button" class="btn btn-primary" (click)="startCreate()">Create user</button>
+	</div>
+
+	@if (validationErrors().length > 0) {
+		<div class="mt-5 flex w-full max-w-full rounded-2xl bg-gray-200 p-3 mx-auto">
+			<ul class="flex flex-col space-y-1 text-base text-error">
+				@for (error of validationErrors(); track $index) {
+					<li>{{ error }}</li>
+				}
+			</ul>
+		</div>
+	}
+
+	<div class="overflow-x-auto rounded-lg border border-base-300 bg-base-100 shadow-sm">
+		<table class="table table-zebra w-full">
+			<thead>
+				<tr>
+					<th>User</th>
+					<th>Email</th>
+					<th>Roles</th>
+					<th class="text-right">Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				@if (loading()) {
+					<tr><td colspan="4" class="py-8 text-center">Loading users...</td></tr>
+				} @else if (users().length === 0) {
+					<tr><td colspan="4" class="py-8 text-center text-base-content/70">No users found.</td></tr>
+				} @else {
+					@for (user of pagedUsers(); track user.id) {
+						<tr [class.bg-primary\/10]="selectedUser()?.id === user.id" (click)="selectUser(user)">
+							<td>
+								<div class="flex items-center gap-3">
+									<div class="avatar placeholder">
+										<div class="w-10 rounded-full bg-neutral text-neutral-content">
+											@if (user.imageUrl) {
+												<img [src]="user.imageUrl" [alt]="user.displayName" />
+											} @else {
+												<span>{{ user.displayName.charAt(0).toUpperCase() }}</span>
+											}
+										</div>
+									</div>
+									<span class="font-medium">{{ user.displayName }}</span>
+								</div>
+							</td>
+							<td>{{ user.email }}</td>
+							<td>
+								<div class="flex flex-wrap gap-1">
+									@for (role of user.roles; track role) {
+										<span class="badge badge-outline">{{ role }}</span>
+									}
+								</div>
+							</td>
+							<td class="text-right">
+								<button type="button" class="btn btn-sm btn-ghost" (click)="$event.stopPropagation(); selectUser(user)">Edit</button>
+								<button type="button" class="btn btn-sm btn-ghost text-error" (click)="$event.stopPropagation(); deleteUser(user)">Delete</button>
+							</td>
+						</tr>
+					}
+				}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="flex items-center justify-between gap-4">
+		<span class="text-sm text-base-content/70">Page {{ currentPage() }} of {{ totalPages() }}</span>
+		<div class="join">
+			<button type="button" class="btn btn-sm join-item" [disabled]="currentPage() === 1" (click)="previousPage()">Previous</button>
+			<button type="button" class="btn btn-sm join-item" [disabled]="currentPage() === totalPages()" (click)="nextPage()">Next</button>
+		</div>
+	</div>
+
+	<form class="grid gap-4 rounded-lg border border-base-300 bg-base-100 p-4 shadow-sm md:grid-cols-2" [formGroup]="userForm" (ngSubmit)="saveUser()">
+		<div class="md:col-span-2 flex items-center justify-between">
+			<h2 class="text-xl font-semibold">{{ selectedUser() ? 'Edit user' : 'Create user' }}</h2>
+			@if (selectedUser()) {
+				<button type="button" class="btn btn-sm btn-ghost" (click)="startCreate()">Clear</button>
+			}
+		</div>
+
+		<label class="form-control w-full">
+			<span class="label-text">Display name</span>
+			<input class="input input-bordered w-full" formControlName="displayName" />
+		</label>
+		<label class="form-control w-full">
+			<span class="label-text">Email</span>
+			<input class="input input-bordered w-full" type="email" formControlName="email" />
+		</label>
+		<label class="form-control w-full">
+			<span class="label-text">{{ selectedUser() ? 'Password (unchanged)' : 'Password' }}</span>
+			<input class="input input-bordered w-full" type="password" formControlName="password" />
+		</label>
+		<label class="form-control w-full">
+			<span class="label-text">Image URL</span>
+			<input class="input input-bordered w-full" formControlName="imageUrl" />
+		</label>
+
+		<fieldset class="md:col-span-2">
+			<legend class="mb-2 font-medium">Roles</legend>
+			<div class="flex flex-wrap gap-3">
+				@for (role of roles(); track role.id) {
+					<label class="flex cursor-pointer items-center gap-2">
+						<input type="checkbox" class="checkbox checkbox-primary" [checked]="isRoleSelected(role.name)" (change)="toggleRole(role.name)" />
+						<span>{{ role.name }}</span>
+					</label>
+				}
+			</div>
+		</fieldset>
+
+		<label class="form-control w-full"><span class="label-text">House number</span><input class="input input-bordered w-full" formControlName="houseNumber" /></label>
+		<label class="form-control w-full"><span class="label-text">Zone</span><input class="input input-bordered w-full" formControlName="zone" /></label>
+		<label class="form-control w-full"><span class="label-text">Barangay</span><input class="input input-bordered w-full" formControlName="barangay" /></label>
+		<label class="form-control w-full"><span class="label-text">City</span><input class="input input-bordered w-full" formControlName="city" /></label>
+		<label class="form-control w-full"><span class="label-text">Province</span><input class="input input-bordered w-full" formControlName="province" /></label>
+		<label class="form-control w-full"><span class="label-text">Phone number</span><input class="input input-bordered w-full" formControlName="phoneNumber" /></label>
+
+		<div class="md:col-span-2 flex justify-end">
+			<button type="submit" class="btn btn-primary" [disabled]="saving()">
+				{{ saving() ? 'Saving...' : selectedUser() ? 'Update user' : 'Create user' }}
+			</button>
+		</div>
+	</form>
+</section>

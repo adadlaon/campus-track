@@ -17,7 +17,7 @@
                 <a routerLink="/members" routerLinkActive="text-accent" [routerLinkActiveOptions]="{exact: true}">Matches</a>
                 <a routerLink="/lists" routerLinkActive="text-accent">Lists</a>
                 <a routerLink="/messages" routerLinkActive="text-accent">Messages</a>
-                <a *appHasRole="['Admin', 'Moderator']" routerLink="/admin" routerLinkActive="text-accent">Admin</a>
+                <a *appHasRole="['Administration']" routerLink="/administration" routerLinkActive="text-accent">User Management</a>
             }
             <a routerLink="/errors" routerLinkActive="text-accent">Errors</a>
         </nav>
