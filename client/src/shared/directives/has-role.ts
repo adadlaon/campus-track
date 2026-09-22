@@ -6,11 +6,15 @@ import { UserService } from '../../core/services/user-service';
 })
 export class HasRole implements OnInit {
   @Input() appHasRole: string[] = [];
-  private accountService = inject(UserService);
+  private userService = inject(UserService);
   private viewContainerRef = inject(ViewContainerRef);
   private templateRef = inject(TemplateRef);
   
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    if (this.userService.currentUser()?.roles?.some(r => this.appHasRole.includes(r))) {
+      this.viewContainerRef.createEmbeddedView(this.templateRef);
+    } else {
+      this.viewContainerRef.clear();
+    }
   }
 }

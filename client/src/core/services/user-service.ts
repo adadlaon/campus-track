@@ -42,7 +42,11 @@ export class UserService {
         setInterval(() => {
             this.http.post<User>(this.baseUrl + 'User/refresh-token', {}, {withCredentials: true}).subscribe({
               next: user => {
-                this.setCurrentUser(user)
+                                if (user) {
+                                        this.setCurrentUser(user);
+                                } else {
+                                        this.logout();
+                                }
               },
               error: () => {
                 this.logout()

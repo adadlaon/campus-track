@@ -15,6 +15,7 @@ public class UserController(
     ITokenService tokenService,
     AppDbContext context) : BaseApiController
 {
+    [AllowAnonymous]
     [HttpPost("login")] // api/user/login
     public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
     {
@@ -28,7 +29,7 @@ public class UserController(
 
         await SetRefreshTokenCookie(user);
 
-        return await user.ToDto(tokenService);
+        return await user.ToDto(userManager, tokenService);
     }
 
     [Authorize]
@@ -46,6 +47,7 @@ public class UserController(
         return Ok();
     }
 
+    [AllowAnonymous]
     [HttpPost("refresh-token")]
     public async Task<ActionResult<UserDto>> RefreshToken()
     {
@@ -56,13 +58,18 @@ public class UserController(
             .FirstOrDefaultAsync(x => x.RefreshToken == refreshToken
                 && x.RefreshTokenExpiry > DateTime.UtcNow);
         
-        if (user == null) return Unauthorized();
+        if (user == null)
+        {
+            Response.Cookies.Delete("refreshToken");
+            return NoContent();
+        }
 
         await SetRefreshTokenCookie(user);
 
-        return await user.ToDto(tokenService);
+        return await user.ToDto(userManager, tokenService);
     }
     
+    [AllowAnonymous]
     [HttpPost("register")] // api/user/register
     public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
     {
@@ -128,7 +135,7 @@ public class UserController(
 
         await SetRefreshTokenCookie(user);
 
-        return await user.ToDto(tokenService);
+        return await user.ToDto(userManager, tokenService);
     }
 
     private async Task SetRefreshTokenCookie(AppUser user)

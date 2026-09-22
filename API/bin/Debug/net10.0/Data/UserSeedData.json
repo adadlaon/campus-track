@@ -9,7 +9,8 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09293432123",
-        "ImageUrl": "https://randomuser.me/api/portraits/women/54.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/women/54.jpg",
+         "Roles": ["Parent"]
     },
     {
         "Id": "karen-id",
@@ -23,7 +24,8 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09993432123",
-        "ImageUrl": "https://randomuser.me/api/portraits/women/50.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/women/50.jpg",
+         "Roles": ["Parent"]
     },
     {
         "Id": "margo-id",
@@ -37,7 +39,8 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09183432126",
-        "ImageUrl": "https://randomuser.me/api/portraits/women/14.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/women/14.jpg",
+         "Roles": ["Parent"]
     },
     {
         "Id": "lois-id",
@@ -51,7 +54,8 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09293432111",
-        "ImageUrl": "https://randomuser.me/api/portraits/women/11.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/women/11.jpg",
+         "Roles": ["Parent"]
     },
     {
         "Id": "ruthie-id",
@@ -65,7 +69,8 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09293432199",
-        "ImageUrl": "https://randomuser.me/api/portraits/women/84.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/women/84.jpg",
+         "Roles": ["Parent"]
     },
     {
         "Id": "todd-id",
@@ -79,7 +84,8 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09293432173",
-        "ImageUrl": "https://randomuser.me/api/portraits/men/90.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/men/90.jpg",
+         "Roles": ["Parent"]
     },
     {
         "Id": "porter-id",
@@ -93,7 +99,8 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09293432964",
-        "ImageUrl": "https://randomuser.me/api/portraits/men/99.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/men/99.jpg",
+         "Roles": ["Parent"]
     },
     {
         "Id": "mayo-id",
@@ -107,7 +114,8 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09193432127",
-        "ImageUrl": "https://randomuser.me/api/portraits/men/57.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/men/57.jpg",
+         "Roles": ["Parent"]
     },
     {
         "Id": "skinner-id",
@@ -121,7 +129,8 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09193432154",
-        "ImageUrl": "https://randomuser.me/api/portraits/men/11.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/men/11.jpg",
+        "Roles": ["Parent", "Teacher"]
     },
     {
         "Id": "davis-id",
@@ -135,6 +144,7 @@
         "City": "Legazpi City",
         "Province": "Albay",
         "PhoneNumber": "09263432120",
-        "ImageUrl": "https://randomuser.me/api/portraits/men/93.jpg"
+        "ImageUrl": "https://randomuser.me/api/portraits/men/93.jpg",
+         "Roles": ["Parent"]
     }
 ]

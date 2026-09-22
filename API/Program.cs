@@ -49,8 +49,12 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddAuthorizationBuilder()
-    .AddPolicy("RequiredAdminRole", policy => policy.RequireRole("Admin"))
-    .AddPolicy("ModeratePhotoRole", policy => policy.RequireRole("Admin", "Moderator"));
+    .AddPolicy("CanManageUsers", policy => policy.RequireRole("Administration"))
+    .AddPolicy("CanManageAttendance", policy => policy.RequireRole("Teacher", "Administration"))
+    .AddPolicy("CanMonitorCampusEntryExit", policy => policy.RequireRole("Security", "Administration"))
+    .AddPolicy("CanViewLinkedStudentAttendance", policy => policy.RequireRole("Parent", "Guardian"))
+    .AddPolicy("CanViewLinkedStudentNotifications", policy => policy.RequireRole("Parent", "Guardian"))
+    .AddPolicy("CanViewLinkedStudentProfile", policy => policy.RequireRole("Parent", "Guardian"));
 
 var app = builder.Build();
 
@@ -60,7 +64,7 @@ app.UseCors(x => x
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials()
-    .WithOrigins("http://localhost:4200", "https://localhost:4200"));
+    .WithOrigins("http://localhost:4100", "https://localhost:4100"));
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -77,9 +81,10 @@ try
 {
     var context = services.GetRequiredService<AppDbContext>();
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     await context.Database.MigrateAsync();
-    await Seed.SeedRoles(context);
-    await Seed.SeedUsers(userManager);    
+    await Seed.SeedRoles(context, roleManager);
+    await Seed.SeedUsers(context, userManager);    
 }
 catch (Exception ex)
 {
