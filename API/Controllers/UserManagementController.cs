@@ -1,4 +1,5 @@
 using API.DTOs;
+using API.Data;
 using API.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,11 +10,12 @@ namespace API.Controllers;
 
 [Authorize(Policy = "CanManageUsers")]
 public class UserManagementController(
+    AppDbContext context,
     UserManager<AppUser> userManager,
     RoleManager<IdentityRole> roleManager) : BaseApiController
 {
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserManagementResponse>>> GetUsers()
+    public async Task<ActionResult<IEnumerable<UserManagementResponseDto>>> GetUsers()
     {
         var users = await userManager.Users
             .Include(user => user.Member)
@@ -21,7 +23,7 @@ public class UserManagementController(
             .OrderBy(user => user.DisplayName)
             .ToListAsync();
 
-        var responses = new List<UserManagementResponse>(users.Count);
+        var responses = new List<UserManagementResponseDto>(users.Count);
         foreach (var user in users)
         {
             responses.Add(await ToResponse(user));
@@ -31,7 +33,7 @@ public class UserManagementController(
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserManagementResponse>> GetUser(string id)
+    public async Task<ActionResult<UserManagementResponseDto>> GetUser(string id)
     {
         var user = await userManager.Users
             .Include(candidate => candidate.Member)
@@ -41,9 +43,13 @@ public class UserManagementController(
     }
 
     [HttpPost]
-    public async Task<ActionResult<UserManagementResponse>> CreateUser(CreateUserRequest request)
+    public async Task<ActionResult<UserManagementResponseDto>> CreateUser(CreateUserRequestDto request)
     {
-        var rolesError = await ValidateRoles(request.Roles);
+        var roles = request.Roles
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        var rolesError = await ValidateRoles(roles);
         if (rolesError != null) return BadRequest(rolesError);
 
         var user = new AppUser
@@ -68,20 +74,35 @@ public class UserManagementController(
         var result = await userManager.CreateAsync(user, request.Password);
         if (!result.Succeeded) return BadRequest(IdentityValidationProblem(result));
 
-        result = await userManager.AddToRolesAsync(user, request.Roles.Distinct(StringComparer.OrdinalIgnoreCase));
+        result = await userManager.AddToRolesAsync(user, roles);
         if (!result.Succeeded)
         {
             await userManager.DeleteAsync(user);
             return BadRequest(IdentityValidationProblem(result));
         }
 
+        var applicationRoles = await context.ApplicationRoles
+            .Where(role => roles.Contains(role.Name))
+            .ToListAsync();
+
+        context.MemberRoles.AddRange(applicationRoles.Select(role => new MemberRole
+        {
+            MemberId = user.Id,
+            RoleId = role.Id
+        }));
+        await context.SaveChangesAsync();
+
         return CreatedAtAction(nameof(GetUser), new { id = user.Id }, await ToResponse(user));
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<UserManagementResponse>> UpdateUser(string id, UpdateUserRequest request)
+    public async Task<ActionResult<UserManagementResponseDto>> UpdateUser(string id, UpdateUserRequestDto request)
     {
-        var rolesError = await ValidateRoles(request.Roles);
+        var roles = request.Roles
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        var rolesError = await ValidateRoles(roles);
         if (rolesError != null) return BadRequest(rolesError);
 
         var user = await userManager.Users
@@ -89,6 +110,15 @@ public class UserManagementController(
             .SingleOrDefaultAsync(candidate => candidate.Id == id);
 
         if (user == null) return NotFound();
+
+        var applicationRoles = await context.ApplicationRoles
+            .Where(role => roles.Contains(role.Name))
+            .ToListAsync();
+
+        if (applicationRoles.Count != roles.Length)
+        {
+            return BadRequest(new { message = "One or more application roles do not exist." });
+        }
 
         user.Email = request.Email;
         user.UserName = request.Email;
@@ -111,8 +141,20 @@ public class UserManagementController(
         result = await userManager.RemoveFromRolesAsync(user, currentRoles);
         if (!result.Succeeded) return BadRequest(IdentityValidationProblem(result));
 
-        result = await userManager.AddToRolesAsync(user, request.Roles.Distinct(StringComparer.OrdinalIgnoreCase));
+        result = await userManager.AddToRolesAsync(user, roles);
         if (!result.Succeeded) return BadRequest(IdentityValidationProblem(result));
+
+        var memberRoles = await context.MemberRoles
+            .Where(memberRole => memberRole.MemberId == user.Id)
+            .ToListAsync();
+
+        context.MemberRoles.RemoveRange(memberRoles);
+        context.MemberRoles.AddRange(applicationRoles.Select(role => new MemberRole
+        {
+            MemberId = user.Id,
+            RoleId = role.Id
+        }));
+        await context.SaveChangesAsync();
 
         return Ok(await ToResponse(user));
     }
@@ -127,21 +169,23 @@ public class UserManagementController(
         return result.Succeeded ? NoContent() : BadRequest(IdentityValidationProblem(result));
     }
 
-    private async Task<UserManagementResponse> ToResponse(AppUser user)
+    private async Task<UserManagementResponseDto> ToResponse(AppUser user)
     {
         var roles = await userManager.GetRolesAsync(user);
-        return new UserManagementResponse(
-            user.Id,
-            user.Email!,
-            user.DisplayName,
-            user.ImageUrl,
-            roles.ToArray(),
-            user.Member?.HouseNumber,
-            user.Member?.Zone,
-            user.Member?.Barangay,
-            user.Member?.City,
-            user.Member?.Province,
-            user.Member?.PhoneNumber);
+        return new UserManagementResponseDto
+        {
+            Id = user.Id,
+            Email = user.Email!,
+            DisplayName = user.DisplayName,
+            ImageUrl = user.ImageUrl,
+            Roles = roles.ToArray(),
+            HouseNumber = user.Member?.HouseNumber,
+            Zone = user.Member?.Zone,
+            Barangay = user.Member?.Barangay,
+            City = user.Member?.City,
+            Province = user.Member?.Province,
+            PhoneNumber = user.Member?.PhoneNumber
+        };
     }
 
     private async Task<ValidationProblemDetails?> ValidateRoles(IEnumerable<string> roles)
